@@ -41,7 +41,6 @@ var _ = ginkgo.Describe("[csi-topology-vanilla] Topology-Aware-Provisioning-With
 		pvZone            string
 		pvRegion          string
 		allowedTopologies []v1.TopologySelectorLabelRequirement
-		nodeList          *v1.NodeList
 		pod               *v1.Pod
 	)
 	ginkgo.BeforeEach(func() {
@@ -111,7 +110,14 @@ var _ = ginkgo.Describe("[csi-topology-vanilla] Topology-Aware-Provisioning-With
 				ssPodsAfterDelete := fss.GetPodList(client, statefulset)
 				pod = &ssPodsAfterDelete.Items[0]
 				ginkgo.By("Verify Pod is scheduled in on a node belonging to same topology as the PV it is attached to")
+				nodeList, err := fnodes.GetReadySchedulableNodes(f.ClientSet)
+				if !(len(nodeList.Items) > 0) {
+					framework.Failf("Unable to find ready and schedulable Node")
+				}
+				framework.ExpectNoError(err, "Unable to find ready and schedulable Node")
 				err = verifyPodLocation(pod, nodeList, pvZone, pvRegion)
+				gomega.Expect(err).NotTo(gomega.HaveOccurred())
+
 			}
 		}
 
