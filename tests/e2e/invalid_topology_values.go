@@ -55,10 +55,10 @@ var _ = ginkgo.Describe("[csi-topology-vanilla] Topology-Aware-Provisioning-With
 		namespace = f.Namespace.Name
 		bootstrap()
 		nodeList, err = fnodes.GetReadySchedulableNodes(f.ClientSet)
+		framework.ExpectNoError(err, "Unable to find ready and schedulable Node")
 		if !(len(nodeList.Items) > 0) {
 			framework.Failf("Unable to find ready and schedulable Node")
 		}
-		framework.ExpectNoError(err, "Unable to find ready and schedulable Node")
 		// Preparing allowedTopologies using topologies with shared and non shared datastores
 		regionZoneValue = GetAndExpectStringEnvVar(envRegionZoneWithSharedDS)
 		_, _, allowedTopologies = topologyParameterForStorageClass(regionZoneValue)

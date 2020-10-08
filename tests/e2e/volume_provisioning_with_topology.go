@@ -56,10 +56,10 @@ var _ = ginkgo.Describe("[csi-topology-vanilla] Basic-Topology-Aware-Provisionin
 		namespace = f.Namespace.Name
 		bootstrap()
 		nodeList, err := fnodes.GetReadySchedulableNodes(f.ClientSet)
+		framework.ExpectNoError(err, "Unable to find ready and schedulable Node")
 		if !(len(nodeList.Items) > 0) {
 			framework.Failf("Unable to find ready and schedulable Node")
 		}
-		framework.ExpectNoError(err, "Unable to find ready and schedulable Node")
 		regionZoneValue := GetAndExpectStringEnvVar(envRegionZoneWithSharedDS)
 		regionValues, zoneValues, allowedTopologies = topologyParameterForStorageClass(regionZoneValue)
 
@@ -118,10 +118,10 @@ var _ = ginkgo.Describe("[csi-topology-vanilla] Basic-Topology-Aware-Provisionin
 
 		ginkgo.By("Verify Pod is scheduled on a node belonging to same topology as the PV it is attached to")
 		nodeList, err := fnodes.GetReadySchedulableNodes(f.ClientSet)
+		framework.ExpectNoError(err, "Unable to find ready and schedulable Node")
 		if !(len(nodeList.Items) > 0) {
 			framework.Failf("Unable to find ready and schedulable Node")
 		}
-		framework.ExpectNoError(err, "Unable to find ready and schedulable Node")
 		err = verifyPodLocation(pod, nodeList, pvZone, pvRegion)
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 	}
