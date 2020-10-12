@@ -99,6 +99,7 @@ const (
 	e2eTestPassword                            = "E2E-test-password!23"
 	vsphereCloudProviderConfiguration          = "vsphere-cloud-provider.conf"
 	svOperationTimeout                         = 240 * time.Second
+	envVmdkDiskURL                             = "DISK_URL"
 )
 
 const (
