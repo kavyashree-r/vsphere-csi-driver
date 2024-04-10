@@ -116,9 +116,6 @@ var _ = ginkgo.Describe("statefulset", func() {
 			ginkgo.By("CNS_TEST: Running for vanilla k8s setup")
 			scParameters = nil
 			storageClassName = defaultNginxStorageClassName
-			scSpec := getVSphereStorageClassSpec(storageClassName, scParameters, nil, "", "", false)
-			sc, err := client.StorageV1().StorageClasses().Create(ctx, scSpec, metav1.CreateOptions{})
-			gomega.Expect(err).NotTo(gomega.HaveOccurred())
 			defer func() {
 				err := client.StorageV1().StorageClasses().Delete(ctx, sc.Name, *metav1.NewDeleteOptions(0))
 				gomega.Expect(err).NotTo(gomega.HaveOccurred())
