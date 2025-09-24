@@ -203,24 +203,17 @@ var _ bool = ginkgo.Describe("[vmsvc] vm service with csi vol tests", func() {
 	   8   delete pvcs
 	   9   Remove spbm policy attached to test namespace
 	*/
-	ginkgo.It("[cf-wcp] verify vmservice vm creation with a pvc in its spec", ginkgo.Label(p0,
+	ginkgo.It("[cf-wcp-f] verify vmservice vm creation with a pvc in its spec", ginkgo.Label(p0,
 		vmServiceVm, block, wcp, vc80), func() {
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 
-		var pandoraSyncWaitTime int
 		var err error
+		var vmIp string
 		curtime := time.Now().Unix()
 		curtimestring := strconv.FormatInt(curtime, 10)
 		pvcName := "cns-pvc-" + curtimestring
 		framework.Logf("pvc name :%s", pvcName)
-
-		if os.Getenv(envPandoraSyncWaitTime) != "" {
-			pandoraSyncWaitTime, err = strconv.Atoi(os.Getenv(envPandoraSyncWaitTime))
-			gomega.Expect(err).NotTo(gomega.HaveOccurred())
-		} else {
-			pandoraSyncWaitTime = defaultPandoraSyncWaitTime
-		}
 
 		ginkgo.By("Creating FCD Disk")
 		fcdID, err := e2eVSphere.createFCDwithValidProfileID(ctx,
@@ -303,9 +296,12 @@ var _ bool = ginkgo.Describe("[vmsvc] vm service with csi vol tests", func() {
 			gomega.Expect(err).NotTo(gomega.HaveOccurred())
 		}()
 
-		ginkgo.By("Wait for VM to come up and get an IP")
-		vmIp, err := waitNgetVmsvcVmIp(ctx, vmopC, namespace, vm.Name)
-		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+		isPrivateNetwork := GetBoolEnvVarOrDefault("IS_PRIVATE_NETWORK", false)
+		if !isPrivateNetwork {
+			ginkgo.By("Wait for VM to come up and get an IP")
+			vmIp, err = waitNgetVmsvcVmIp(ctx, vmopC, namespace, vm.Name)
+			gomega.Expect(err).NotTo(gomega.HaveOccurred())
+		}
 
 		ginkgo.By("Wait and verify PVCs are attached to the VM")
 		gomega.Expect(waitNverifyPvcsAreAttachedToVmsvcVm(ctx, vmopC, cnsopC, vm,
@@ -320,8 +316,6 @@ var _ bool = ginkgo.Describe("[vmsvc] vm service with csi vol tests", func() {
 			volHandle = pv.Spec.CSI.VolumeHandle
 			gomega.Expect(volHandle).NotTo(gomega.BeEmpty())
 		}
-
-		isPrivateNetwork := GetBoolEnvVarOrDefault("IS_PRIVATE_NETWORK", false)
 		if !isPrivateNetwork {
 			ginkgo.By("Verify PVCs are accessible to the VM")
 			ginkgo.By("Write some IO to the CSI volumes and read it back from them and verify the data integrity")
