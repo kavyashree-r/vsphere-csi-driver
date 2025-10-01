@@ -873,5 +873,4 @@ var _ bool = ginkgo.Describe("[vmsvc] VM-Service-VM-LateBinding", func() {
 		// 	ctx, vmopC, namespace, vmClass, []*v1.PersistentVolumeClaim{pvc}, vmi, wffsStoragePolicyName, secretName)
 
 	})
-
 })

@@ -1874,7 +1874,7 @@ func getVMzonev1(ctx context.Context, vm *vmopv4.VirtualMachine) (string, error)
 	return val, err
 }
 
-// verifyPvcsAreAttachedToVmsvcVm verify given pvc(s) is(are) attached to given VM via vm and cnsnodevmattachment CRs
+// verifyPvcsAreAttachedToVmsvcVm  for v1alpha5verify given pvc(s) is(are) attached to given VM via vm and cnsnodevmattachment CRs
 func verifyPvcsAreAttachedToVmsvcVmV5(ctx context.Context, cnsc ctlrclient.Client,
 	vm *vmopv5.VirtualMachine, pvcs []*v1.PersistentVolumeClaim) bool {
 

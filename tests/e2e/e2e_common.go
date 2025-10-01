@@ -274,7 +274,7 @@ const (
 	envStoragePolicyNameForVsanNfsDatastores = "STORAGE_POLICY_FOR_VSAN_NFS_DATASTORES"
 	devopsKubeConf                           = "DEV_OPS_USER_KUBECONFIG"
 	quotaSupportedVCVersion                  = "9.0.0"
-
+	// WFFC vmservicevm test parameters
 	lateBinding            = "-latebinding"
 	cnsVolumeDeleteTimeout = 5 * time.Minute
 	vscDeleteTimeout       = 5 * time.Minute
